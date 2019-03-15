@@ -3,7 +3,7 @@ import wave
 
 CHUNK = 1024
 
-wf = wave.open('audio/vlc_interview_wav_format.wav', 'rb')
+wf = wave.open('audio/output.wav', 'rb')
 
 p = pyaudio.PyAudio()
 
@@ -13,7 +13,7 @@ stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
 
 data = wf.readframes(CHUNK)
 
-while data != '':
+while len(data) > 0:
 	stream.write(data)
 	data = wf.readframes(CHUNK)
 
