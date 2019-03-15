@@ -1,9 +1,11 @@
+from __future__ import print_function
+
 import numpy
 
-from __future__ import print_function
 from pyAudioAnalysis import audioFeatureExtraction as aF
 from pyAudioAnalysis import audioTrainTest as aT
 from pyAudioAnalysis import audioBasicIO
+from pyAudioAnalysis.audioSegmentation import smoothMovingAvg
 
 """ Utility function for counting silence periods """
 
@@ -34,9 +36,15 @@ def silenceCounter(x, fs, st_win, st_step, smoothWindow=0.5, weight=0.5, plot=Fa
 	# get all features that correspond to high energy
 	class2 = st_feats[:, numpy.where(st_energy >= t2)[0]]
 	# form the binary classification task and ...
-	faets_s = [class1.T, class2.T]
+	
+	# change the order of the array
+	# faets_s = [class1.T, class2.T]
+	
+	# changing order gives the segmens with silence
+	faets_s = [class2.T, class1.T]
+	
 	# normalize and train the respective svm probabilistic model
-	# (ONSET vs SILENCE)
+	# (SILENCE vs ONSET)
 	[faets_s_norm, means_s, stds_s] = aT.normalizeFeatures(faets_s)
 	svm = aT.trainSVM(faets_s_norm, 1.0)
 
